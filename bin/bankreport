@@ -1,0 +1,8 @@
+#!/bin/bash
+
+cd $(dirname $0)/../
+
+source ./pyenv/bin/activate
+
+python ./lib/csv_import.py "$@"
+
