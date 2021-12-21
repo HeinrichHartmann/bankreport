@@ -1,8 +1,6 @@
 #!/bin/bash
 
-cd $(dirname $0)/../
+cd "$(dirname $0)/.."
 
-source ./pyenv/bin/activate
-
-python ./lib/csv_import.py "$@"
+poetry run python ./src/csv_import.py "$@"
 

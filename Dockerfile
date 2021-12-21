@@ -27,4 +27,11 @@ ENV PYENV_SHELL=bash
 RUN pip install --upgrade pip
 RUN pip install poetry
 
-source $(poetry env info --path)/bin/activate
+RUN mkdir -p /work
+WORKDIR /work
+COPY pyproject.toml ./
+RUN poetry install
+
+COPY src ./src
+COPY bin ./bin
+
