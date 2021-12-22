@@ -7,7 +7,7 @@ install:
 
 bump:
 	poetry version patch
-	git commit -am "bump $(poetry version -s)"
+	git commit -am "bump $$(poetry version -s)"
 	git push
 
 release:
