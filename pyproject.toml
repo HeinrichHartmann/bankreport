@@ -2,6 +2,7 @@
 name = "bankreport"
 version = "0.1.1"
 description = "Parse and analyze csv files from online banking."
+repository = "https://github.com/heinrichhartmann/bankreport"
 authors = ["Heinrich Hartmann <heinrich@heinrichhartmann.com>"]
 
 [tool.poetry.dependencies]
