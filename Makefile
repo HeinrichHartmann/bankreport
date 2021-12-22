@@ -1,5 +1,6 @@
 install:
-	rm -r dist
+	-pip uninstall -y bankreport
+	-rm -r dist
 	poetry build
-	pip install --force-reinstall dist/*.whl
-	pyenv rehash
+	pip install dist/*.whl
+	-pyenv rehash

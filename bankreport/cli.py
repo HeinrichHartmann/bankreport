@@ -12,11 +12,11 @@ from . import templates
 
 COLS = "Account Date Text Value".split()
 
-SILENT = False
+VERBOSITY = 0
 
 
 def eprint(*args):
-    if not SILENT:
+    if VERBOSITY > 0:
         print(*args, file=sys.stderr)
 
 
@@ -165,15 +165,40 @@ def import_fidor_csv(path):
 
 @click.command()
 @click.argument("src", nargs=-1)
-@click.option("-f", "--format", "fmt", default="txt")
+@click.option(
+    "-f",
+    "--format",
+    "fmt",
+    default="txt",
+    type=click.Choice(["tsv", "csv", "txt", "pkl", "html"], case_sensitive=False),
+)
 @click.option("--dedup/--no-dedup", default=False)
-@click.option("--sort", default=False)
-@click.option("-x", "--exclude", multiple=True)
-@click.option("--silent/--no-silent", default=False)
-@click.option("--rules", default=None)
-def main(src, fmt, dedup, sort, exclude, silent, rules):
-    global SILENT
-    SILENT = silent
+@click.option(
+    "--sort",
+    help="comma sepearated list of fields to sort the output by",
+    default="Date",
+)
+@click.option(
+    "-x",
+    "--exclude",
+    help="exclude records containing the provided string",
+    multiple=True,
+)
+@click.option("-v", "--verbose", count=True)
+@click.option(
+    "--rules",
+    help="file containing classification rules. Schema: <regex>\t<category>\n",
+    default=None,
+)
+def main(src, fmt, dedup, sort, exclude, verbose, rules):
+    global VERBOSITY
+    VERBOSITY = verbose
+
+    if len(src) == 0:
+        ctx = click.get_current_context()
+        click.echo(ctx.get_help())
+        ctx.exit()
+
     df: pd.DataFrame = pd.DataFrame(columns=COLS)
     for path in src:
         eprint("Importing " + path)
