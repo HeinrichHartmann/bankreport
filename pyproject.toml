@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bankreport"
-version = "0.1.1"
+version = "0.1.2"
 description = "Parse and analyze csv files from online banking."
 repository = "https://github.com/heinrichhartmann/bankreport"
 authors = ["Heinrich Hartmann <heinrich@heinrichhartmann.com>"]
