@@ -164,7 +164,7 @@ def import_fidor_csv(path):
     "-f",
     "--format",
     "fmt",
-    default="txt",
+    default="tsv",
     type=click.Choice(["tsv", "csv", "txt", "pkl", "html"], case_sensitive=False),
 )
 @click.option(
