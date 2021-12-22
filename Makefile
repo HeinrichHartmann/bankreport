@@ -1,5 +1,5 @@
-image:
-	docker build . --tag bankreport
-
-run:
-	source pyenv/bin/activate && python ./lib/csv_import.py
+install:
+	rm -r dist
+	poetry build
+	pip install --force-reinstall dist/*.whl
+	pyenv rehash

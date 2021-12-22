@@ -5,10 +5,12 @@ description = ""
 authors = ["Heinrich Hartmann <heinrich@heinrichhartmann.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.7"
 pandas = "^1.1.4"
 click = "^7.1.2"
-parsimonious = "^0.8.1"
+
+[tool.poetry.scripts]
+bankreport = 'bankreport:main'
 
 [tool.poetry.dev-dependencies]
 
