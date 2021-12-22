@@ -10,7 +10,7 @@ import pandas as pd
 
 from . import templates
 
-COLS = "Account Date Text Value Category".split()
+COLS = "Account Date Text Value".split()
 
 SILENT = False
 
@@ -170,7 +170,8 @@ def import_fidor_csv(path):
 @click.option("--sort", default=False)
 @click.option("-x", "--exclude", multiple=True)
 @click.option("--silent/--no-silent", default=False)
-def main(src, fmt, dedup, sort, exclude, silent):
+@click.option("--rules", default=None)
+def main(src, fmt, dedup, sort, exclude, silent, rules):
     global SILENT
     SILENT = silent
     df: pd.DataFrame = pd.DataFrame(columns=COLS)
@@ -201,6 +202,18 @@ def main(src, fmt, dedup, sort, exclude, silent):
 
     for s in exclude:
         df = df[~df["Text"].str.contains(s)]
+
+    if rules:
+        with open(rules, "rb") as fh:
+            # schma of rules file:
+            # <rule regexp>\t<category>
+            content = fh.read().decode("utf-8")
+            rules = [l.split("\t") for l in content.splitlines() if "\t" in l]
+            df["Category"] = ""
+            for rx, cat in rules:
+                df.loc[df.Text.str.contains(rx, regex=True), "Category"] = cat
+    else:
+        df["Category"] = ""
 
     if fmt == "txt":
         print(df.to_string())

@@ -2,5 +2,4 @@
 
 cd "$(dirname $0)/.."
 
-poetry run python ./src/csv_import.py "$@"
-
+poetry run python -m src "$@"
