@@ -5,7 +5,12 @@ install:
 	pip install dist/*.whl
 	-pyenv rehash
 
+bump:
+	poetry version patch
+	git commit -am "bump $(poetry version -s)"
+	git push
 
 release:
-	# Make sure to update version in pyproject.toml first
+	rm -r dist
+	poetry build
 	poetry publish
