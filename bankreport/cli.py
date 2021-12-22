@@ -20,11 +20,6 @@ def eprint(*args):
         print(*args, file=sys.stderr)
 
 
-def rstrip(s, suffix):
-    if s.endswith(suffix):
-        return s[: -len(suffix)]
-
-
 def read_comdirekt_sections(path):
     "Parse comdirekt csv and return section iterator"
     #
@@ -172,24 +167,26 @@ def import_fidor_csv(path):
     default="txt",
     type=click.Choice(["tsv", "csv", "txt", "pkl", "html"], case_sensitive=False),
 )
-@click.option("--dedup/--no-dedup", default=False)
+@click.option(
+    "--dedup/--no-dedup", help="Deduplicate entries across csv files", default=True
+)
 @click.option(
     "--sort",
-    help="comma sepearated list of fields to sort the output by",
+    help="Comma sepearated list of columns to sort the output by",
     default="Date",
 )
 @click.option(
     "-x",
     "--exclude",
-    help="exclude records containing the provided string",
+    help="Exclude records containing the provided string in Text column",
     multiple=True,
 )
-@click.option("-v", "--verbose", count=True)
 @click.option(
     "--rules",
-    help="file containing classification rules. Schema: <regex>\t<category>\n",
+    help=r"File containing classification rules. Schema: <regex>\t<category>\n",
     default=None,
 )
+@click.option("-v", "--verbose", help="Print debug output to stderr", count=True)
 def main(src, fmt, dedup, sort, exclude, verbose, rules):
     global VERBOSITY
     VERBOSITY = verbose
@@ -214,9 +211,7 @@ def main(src, fmt, dedup, sort, exclude, verbose, rules):
     df = df[COLS].reset_index(drop=True)
 
     if dedup:
-        cols = "Date Text Value".split()
-        eprint("dedup")
-        df2 = df.drop_duplicates(subset=cols)
+        df2 = df.drop_duplicates(subset="Date Text Value".split())
         eprint("Dedup (dropped {})".format(len(df) - len(df2)))
         eprint(df[~df.isin(df2).all(1)])
         df = df2
@@ -228,17 +223,14 @@ def main(src, fmt, dedup, sort, exclude, verbose, rules):
     for s in exclude:
         df = df[~df["Text"].str.contains(s)]
 
+    df["Category"] = ""
     if rules:
         with open(rules, "rb") as fh:
-            # schma of rules file:
-            # <rule regexp>\t<category>
             content = fh.read().decode("utf-8")
             rules = [l.split("\t") for l in content.splitlines() if "\t" in l]
             df["Category"] = ""
             for rx, cat in rules:
                 df.loc[df.Text.str.contains(rx, regex=True), "Category"] = cat
-    else:
-        df["Category"] = ""
 
     if fmt == "txt":
         print(df.to_string())
