@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "bankreport"
-version = "0.1.0"
-description = ""
+version = "0.1.1"
+description = "Parse and analyze csv files from online banking."
 authors = ["Heinrich Hartmann <heinrich@heinrichhartmann.com>"]
 
 [tool.poetry.dependencies]
@@ -11,8 +11,6 @@ click = "^7.1.2"
 
 [tool.poetry.scripts]
 bankreport = 'bankreport:main'
-
-[tool.poetry.dev-dependencies]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
