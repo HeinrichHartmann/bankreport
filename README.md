@@ -1,5 +1,12 @@
  # bankreport
 
+## Installation
+
+* Via pip: `pip install bankreport`
+* From  local git checkout: `make install`
+
+## Usage
+
 ```
 Usage: bankreport [OPTIONS] [SRC]...
 
