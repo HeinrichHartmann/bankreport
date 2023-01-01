@@ -40,8 +40,8 @@ def read_comdirekt_sections(path):
     with open(path, "rb") as fh:
         content = fh.read().decode("iso-8859-1").strip().replace("\r", "")
         # Strip ";\n" from beginning
-        sep = content[0]
-        content = content[2:]
+        content = content.lstrip(";\n")
+
         # Remove "Kontostand rows"
         content = re.sub(
             "^.*Kontostand[^;]*;[^;]*;.*$", "", content, flags=re.MULTILINE
@@ -50,14 +50,9 @@ def read_comdirekt_sections(path):
         content = re.sub(r'("\d+.\d+.\d+");\n"neu"', r"\1", content, flags=re.MULTILINE)
         # Spit into sections based on headline:
         # "Ums<E4>tze Depot";"Zeitraum: 01.01.2020 - 01.01.2021";
-        # Matching keywords "Ums.atze" and "Zeitraum" in a single line with two newlines following
+        # Matching keywords "Ums.atze" and "Zeitraum" in a single line
         section_pos = [
-            m.start()
-            for m in re.finditer(
-                r"[^\n].*Ums.tze([^;\n]*);[^\n]*Zeitraum[^\n]*\n\n",
-                content,
-                re.MULTILINE,
-            )
+            m.start() for m in re.finditer(r'^[" ]*Ums.*tze.*Zeitraum', content)
         ]
         section_pos.append(len(content))
         for i in range(len(section_pos) - 1):
